@@ -7,6 +7,21 @@ export default class UserController {
   constructor() {
     this.userRepository = new UserRepository();
   }
+
+  async resetPassword(req, res, next) {
+    const { newPassword } = req.body;
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    const userID = req.userID;
+    try {
+      await this.userRepository.resetPassword(userID, hashedPassword);
+      res.status(200).send('Password is Updated');
+    } catch (err) {
+      console.log(err);
+      console.log('Passing Error to Middleware');
+      next(err);
+    }
+  }
+
   async signUp(req, res) {
     const { name, email, password, type } = req.body;
 

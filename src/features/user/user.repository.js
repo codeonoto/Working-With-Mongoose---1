@@ -6,6 +6,21 @@ import ApplicationError from '../../errorHandler/applicationError.js';
 const UserModel = mongoose.model('User', userSchema);
 
 export default class UserRepository {
+  async resetPassword(userID, hashedPassword) {
+    try {
+      let user = await UserModel.findById(userID);
+      if (user) {
+        user.password = hashedPassword;
+        user.save();
+      } else {
+        throw new Error('No such user found');
+      }
+    } catch (err) {
+      console.log(err);
+      throw new ApplicationError('Something went wrong with database', 500);
+    }
+  }
+
   async signUp(user) {
     try {
       //create instance of model.
