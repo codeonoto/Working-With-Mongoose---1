@@ -13,6 +13,7 @@ import productRouter from './src/features/product/product.routes.js';
 import userRouter from './src/features/user/user.routes.js';
 import cartRouter from './src/features/cart/cartItems.routes.js';
 import orderRouter from './src/features/order/order.routes.js';
+import mongoose from 'mongoose';
 
 // Export Imports
 import bodyParser from 'body-parser';
@@ -53,6 +54,9 @@ server.get('/', (req, res) => {
 // Error Handler Middleware
 server.use((err, req, res, next) => {
   console.log(err);
+  if (err instanceof mongoose.Error.ValidationError) {
+    res.status(404).send(err.message);
+  }
   if (err instanceof ApplicationError) {
     res.status(err.code).send(err.message);
   }

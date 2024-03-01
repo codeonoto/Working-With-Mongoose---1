@@ -28,8 +28,12 @@ export default class UserRepository {
       await newUser.save();
       return newUser;
     } catch (err) {
-      console.log(err);
-      throw new ApplicationError('Something went wrong with database', 500);
+      if (err instanceof mongoose.Error.ValidationError) {
+        throw err;
+      } else {
+        console.log(err);
+        throw new ApplicationError('Something went wrong with database', 500);
+      }
     }
   }
 
